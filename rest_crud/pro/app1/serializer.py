@@ -2,10 +2,24 @@ from rest_framework import serializers
 from .models import Course,Student,Enrollemnt
 
 # Create your models here.
+
+def validate_title(name):
+    print("name:",name)
+    if name[0].islower():
+        raise serializers.ValidationError("title first letter must be capital...",)
+    return name
+
+def validate_decsription(name):
+    count = len(name.split())
+    if count < 10:
+        raise serializers.ValidationError("Description is too short")
+    return name
+
+
 class Course_Serializer(serializers.Serializer):
     course_id = serializers.CharField(max_length=20)
-    title = serializers.CharField(max_length=255)
-    decsription = serializers.CharField(max_length=500)
+    title = serializers.CharField(max_length=255, validators=[validate_title])
+    decsription = serializers.CharField(max_length=500, validators = [validate_decsription])
     duration = serializers.DurationField()
 
     def create(self, validate_data):
@@ -18,7 +32,6 @@ class Course_Serializer(serializers.Serializer):
         instance.duration =  validate_data.get('duration', instance.duration)
         instance.save()
         return instance
-    
 
 class Student_Serializer(serializers.Serializer):
     roll = serializers.CharField()

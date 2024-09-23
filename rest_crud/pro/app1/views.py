@@ -222,55 +222,120 @@ from django.views import View
 
 @method_decorator(csrf_exempt, name = 'dispatch')
 class StudentsApi(View):
-    def get(self, request, *arg, **kwarg):
-        students = Student.objects.all()
-        serializer = Student_Serializer(students, many = True)
-        json_data = JSONRenderer().render(serializer.data)
-        return HttpResponse(json_data, content_type="application/json")
- 
-
-    def get(self, request, *arg, **kwargs):
-        print(arg)
+    def get(self, request, student_roll = None):
+        #Get a specific student
+        if student_roll:
+            try:
+                student = Student.objects.get(roll = student_roll)
+            except Student.DoesNotExist:
+                return JsonResponse({"error" : "student deoes not exist"})
+            serializer = Student_Serializer(student)
+            return JsonResponse(serializer.data, safe=False)
+        #Get all specific students
+        else:
+            student = Student.objects.all()
+            serializer = Student_Serializer(student, many=True)
+            return JsonResponse(serializer.data, safe=False)
+    
+    # Post Students in database
+    def post(self, request):
         try:
-            course1 = Course.objects.get(course_id = kwargs.get("course_id"))
-        except Course.DoesNotExist:
-            return HttpResponse((JSONRenderer().render({"Error" : "Course Not Found"})),content_type="application/json")
-        enrollments = Enrollemnt.objects.filter(course = course1)
-        students = [enrollment.student for enrollment in enrollments]
-        serializer = Student_Serializer(students, many = True)
-        json_data = JSONRenderer().render(serializer.data)
-        return HttpResponse(json_data, content_type = "application/json")
+            pythondata = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"error" : "invalid json"})     
+        serializer = Student_Serializer(data = pythondata)
+        if serializer.is_valid():
+            serializer.save()
+            res = {"msg" : "Data created"}
+            return JsonResponse(res)
+        json_data = JSONRenderer().render(serializer.error_messages)
+        return HttpResponse(json_data, content_type = "application/json")  
+    
+    #update students
+    def put(self, request, student_roll):
+        try:
+            student = Student.objects.get(roll = student_roll)
+        except Student.DoesNotExist:
+            return JsonResponse({'error' : 'Student Not Found'})
+        try:
+            data = json.loads(request.body) 
+        except json.JSONDecodeError:
+            return JsonResponse({'error' : 'Invalid JSON'})
         
-    
+        serializer = Student_Serializer(student, data = data, partial = True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'message':'Student updated successfully'})
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+        
+    #delete student
+    def delete(delf, request, student_roll):
+        try:
+            student = Student.objects.get(roll = student_roll)
+        except Student.DoesNotExist:
+            return JsonResponse({"error":"Student Not Found"})
+        
+        student.delete()
+        return JsonResponse({"message":"Student deleted Successfully"})
     
 
-    def get(self, request,*arg, **kwargs):
-        print("kwargs",kwargs)
-        print(arg)
-        try:
-            course = Course.objects.get(course_id = kwargs.get("course_id"))
-            student = Student.objects.get(roll = kwargs.get("stu_id"))
-            Enrollemnt.objects.get(course = course, student = student)
-        except Course.DoesNotExist:        
-            return HttpResponse(JSONRenderer().render({"Error" : "Course does not found"}), content_type='application/json')
-        except Student.DoesNotExist:        
-            return HttpResponse(JSONRenderer().render({"Error" : "Student does not found"}), content_type='application/json')
-        except Enrollemnt.DoesNotExist:        
-            return HttpResponse(JSONRenderer().render({"Error" : "Student does not found"}), content_tupe='application/json')
-        Serializer = Student_Serializer(student)
-        json_data = JSONRenderer().render(Serializer.data)
-        return HttpResponse(json_data, content_type='application/json')
- 
+@method_decorator(csrf_exempt, name = 'dispatch')
+class CourseApi(View):
+    def get(self, request, course_id = None):
+        #Get a specific course
+        if course_id:
+            try:
+                course = Course.objects.get(course_id = course_id)
+            except Course.DoesNotExist:
+                return JsonResponse({"error" : "Course deoes not exist"})
+            serializer = Course_Serializer(course)
+            return JsonResponse(serializer.data, safe=False)
+        #Get all courses
+        else:
+            course = Course.objects.all()
+            serializer = Course_Serializer(course, many=True)
+            return JsonResponse(serializer.data, safe=False)
     
-    # def post(self, request,*arg, **kwargs):
-    #     json_data = request.body
-    #     stream = io.BytesIO(json_data)
-    #     pythondata = JSONParser().parse(stream)
-    #     serializer = Student_Serializer(data = pythondata)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         res = {"msg" : "Data created"}
-    #         json_data = JSONRenderer().render(res)
-    #         return HttpResponse(json_data, content_type = "application/json")
-    #     json_data = JSONRenderer().render(serializer.error_messages)
-    #     return HttpResponse(json_data, content_type = "application/json")  
+    # Post courses in database
+    def post(self, request):
+        try:
+            pythondata = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"error" : "invalid json"})     
+        serializer = Course_Serializer(data = pythondata)
+        if serializer.is_valid():
+            serializer.save()
+            res = {"msg" : "Data created"}
+            return JsonResponse(res)
+        return JsonResponse(serializer.errors, status = 400)
+    
+    #update courses
+    def put(self, request, course_id):
+        try:
+            course = Course.objects.get(course_id = course_id)
+        except Course.DoesNotExist:
+            return JsonResponse({'error' : 'Course Not Found'})
+        try:
+            data = json.loads(request.body) 
+        except json.JSONDecodeError:
+            return JsonResponse({'error' : 'Invalid JSON'})
+        
+        serializer = Course_Serializer(course, data = data, partial = True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'message':'Course updated successfully'})
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+        
+    #delete course
+    def delete(self, request, course_id):
+        try:
+            course = Course.objects.get(course_id = course_id)
+        except Course.DoesNotExist:
+            return JsonResponse({"error":"Course Not Found"})
+        
+        course.delete()
+        return JsonResponse({"message":"Course deleted Successfully"})

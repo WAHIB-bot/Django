@@ -1,6 +1,6 @@
 from django.urls import path
 from .import views
-from .views import StudentsApi
+from .views import StudentsApi, CourseApi
 urlpatterns = [
     # path('students/', views.get_all_students, name='students'),
     # path('Courses/', views.get_all_Courses, name='students'),
@@ -15,5 +15,11 @@ urlpatterns = [
     # path('courses/<str:course_id>/delete', views.del_course, name='delete_course'),
     # path('students/<str:student_roll>/delete', views.del_student, name='delete_student'),
 
-    
+    path('students/', StudentsApi.as_view(), name='students'),#Get and Post students
+    path('students/<str:student_roll>', StudentsApi.as_view(), name='students'),#Get specific student, put and delete students
+
+    path('courses/', CourseApi.as_view(), name='courses'),#Get and Post Courses
+    path('courses/<str:course_id>', CourseApi.as_view(), name='courses'),#Get specific Course, put and delete Courses
+
+
 ]
