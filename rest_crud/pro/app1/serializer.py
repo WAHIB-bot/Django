@@ -11,6 +11,14 @@ class Course_Serializer(serializers.Serializer):
     def create(self, validate_data):
         return Course.objects.create(**validate_data) 
     
+    def update(self, instance, validate_data):
+        instance.course_id =  validate_data.get('course_id', instance.course_id)
+        instance.title =  validate_data.get('title', instance.title)
+        instance.decsription =  validate_data.get('decsription', instance.decsription)
+        instance.duration =  validate_data.get('duration', instance.duration)
+        instance.save()
+        return instance
+    
 
 class Student_Serializer(serializers.Serializer):
     roll = serializers.CharField()
@@ -19,6 +27,13 @@ class Student_Serializer(serializers.Serializer):
 
     def create(self, validate_data):
         return Student.objects.create(**validate_data) 
+    
+    def update(self, instance, validate_data):
+        instance.roll =  validate_data.get('roll', instance.roll)
+        instance.name =  validate_data.get('name', instance.name)
+        instance.city =  validate_data.get('city', instance.city)
+        instance.save()
+        return instance
 
 
 class Enrollemnt_Serializer(serializers.Serializer):
