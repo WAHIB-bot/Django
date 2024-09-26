@@ -1,0 +1,9 @@
+GENERATE TOKEN
+1.py manage.py drf_create_token username
+http POST http://127.0.0.1:8000/gettoken/ username = "admin" password = "123"
+
+GET DATA USING APIs
+http GET http://127.0.0.1:8000/StudentApi/  "Authorization:Token ..."
+http -f POST http://127.0.0.1:8000/StudentApi/ name =  roll =  city =   "Authorization:Token ..."
+http PUT http://127.0.0.1:8000/StudentApi/id/ name= roll= city= "Authorization:Token ..."
+http DELETE http://127.0.0.1:8000/StudentApi/id/ "Authorization:Token ..."
