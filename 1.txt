@@ -7,3 +7,14 @@ http GET http://127.0.0.1:8000/StudentApi/  "Authorization:Token ..."
 http -f POST http://127.0.0.1:8000/StudentApi/ name =  roll =  city =   "Authorization:Token ..."
 http PUT http://127.0.0.1:8000/StudentApi/id/ name= roll= city= "Authorization:Token ..."
 http DELETE http://127.0.0.1:8000/StudentApi/id/ "Authorization:Token ..."
+
+SIMPLE JWT:
+http POST http://127.0.0.1:8000/GetToken/ username="" password=""
+http POST http://127.0.0.1:8000/verifyToken/ token="" 
+http POST http://127.0.0.1:8000/RefreshToken/ refresh="" 
+
+GET DATA FROM THE API
+http GET http://127.0.0.1:8000/StudentApi/ 'Authorization:Bearer ...'
+http POST http://127.0.0.1:8000/StudentApi/ name= roll= city= 'Authorization:Bearer ...'
+http PUT http://127.0.0.1:8000/StudentApi/id/ name= roll= city= 'Authorization:Bearer ...'
+http DELETE http://127.0.0.1:8000/StudentApi/id/ 'Authorization:Bearer ...'
