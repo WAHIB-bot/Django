@@ -18,3 +18,9 @@ http GET http://127.0.0.1:8000/StudentApi/ 'Authorization:Bearer ...'
 http POST http://127.0.0.1:8000/StudentApi/ name= roll= city= 'Authorization:Bearer ...'
 http PUT http://127.0.0.1:8000/StudentApi/id/ name= roll= city= 'Authorization:Bearer ...'
 http DELETE http://127.0.0.1:8000/StudentApi/id/ 'Authorization:Bearer ...'
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI3NzEzNjc4LCJpYXQiOjE3Mjc3MTMzNzgsImp0aSI6IjY3OWMwNjE4N2FkOTQwYjI5NDkxZjUyNDA4NDRkZjZiIiwidXNlcl9pZCI6Mn0.-YEkcGUhtfAWw5Q2_qOTqRdua_zk1Fp_NyeTKam4CuM
+
+
+
+
