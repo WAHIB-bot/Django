@@ -12,6 +12,9 @@ class category(models.Model):
 class items(models.Model):
     name = models.CharField(max_length=50)
     i_id = models.AutoField(primary_key=True)
-    image = models.ImageField(upload_to='images/item', default="")
+    image = models.ImageField(upload_to='static/images', default="")
     category = models.ForeignKey(category, on_delete=models.CASCADE, related_name='items')
+    desc = models.CharField(max_length=250, default='')
 
+    def __str__(self):
+        return self.name
